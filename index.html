@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programa Arquitectónico — Facultad 3: Ingeniería, Tecnología e Informática</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1B3A5C;--navy2:#2B4F76;--steel:#4A6D8C;
+  --light:#E8EEF4;--gold:#D4A017;--green:#27AE60;
+  --orange:#E67E22;--red:#C0392B;--gray:#F4F7FB;
+  --text:#1A1A2E;--border:#DEE5EF;
+  --fac:#0D4F8C;   /* azul tecnológico */
+  --fac2:#1A6AB5;  --fac3:#3085CC;
+}
+body{font-family:'Trebuchet MS',sans-serif;background:var(--gray);color:var(--text);min-height:100vh;font-size:12px}
+.cover{background:linear-gradient(135deg,var(--fac) 0%,#061A30 100%);color:#fff;padding:40px 48px 36px;position:relative;overflow:hidden}
+.cover::before{content:'';position:absolute;top:-40%;right:-5%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.05),transparent 65%);pointer-events:none}
+.cover-num{font-size:80px;font-weight:900;font-family:Georgia,serif;color:rgba(255,255,255,.07);line-height:1;margin-bottom:-20px}
+.cover-super{font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.55);margin-bottom:8px;text-transform:uppercase}
+.cover-title{font-size:30px;font-weight:700;font-family:Georgia,serif;line-height:1.2;margin-bottom:6px}
+.cover-sub{font-size:12px;color:rgba(255,255,255,.65);letter-spacing:1px;margin-bottom:20px}
+.cover-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.chip{font-size:9px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:1px;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8)}
+.chip.gold{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+.cover-meta{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,.2)}
+.cm{text-align:center}
+.cm-v{font-size:22px;font-weight:800;font-family:Georgia,serif;color:var(--gold)}
+.cm-l{font-size:9px;color:rgba(255,255,255,.6);margin-top:3px;letter-spacing:.5px}
+
+.nav{background:var(--fac);position:sticky;top:0;z-index:90;display:flex;overflow-x:auto;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.nav a{padding:11px 16px;font-size:9px;font-weight:700;letter-spacing:1.5px;white-space:nowrap;color:rgba(255,255,255,.55);text-decoration:none;border-bottom:3px solid transparent;transition:all .2s}
+.nav a:hover{color:#fff;border-bottom-color:var(--gold)}
+
+.cnt{max-width:1400px;margin:0 auto;padding:32px 48px 60px}
+.section{margin-bottom:48px}
+.sec-header{display:flex;align-items:flex-end;gap:14px;margin-bottom:24px;padding-bottom:12px;border-bottom:2px solid var(--fac)}
+.sec-num{font-size:40px;font-weight:900;color:var(--fac);font-family:Georgia,serif;opacity:.35;line-height:1}
+.sec-title{font-size:18px;font-weight:700;color:var(--fac);font-family:Georgia,serif}
+.sec-sub{font-size:10px;color:var(--steel);letter-spacing:1.5px;margin-top:2px;text-transform:uppercase}
+
+.card{background:#fff;border:1px solid var(--border);padding:20px;margin-bottom:18px;transition:box-shadow .2s}
+.card:hover{box-shadow:0 3px 14px rgba(27,58,92,.08)}
+.card-title{font-size:10px;font-weight:700;color:var(--fac);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card-title::after{content:'';flex:1;height:1px;background:var(--light)}
+
+.justif{background:rgba(13,79,140,.06);border-left:4px solid var(--fac);padding:14px 18px;margin-bottom:18px;border-radius:0 4px 4px 0}
+.justif-t{font-size:9px;font-weight:700;color:var(--fac);letter-spacing:2px;margin-bottom:6px}
+.justif p{font-size:11px;line-height:1.8;color:var(--text)}
+
+.prog-table-wrap{overflow-x:auto;margin-bottom:8px;border:1px solid var(--border)}
+.prog-table{width:100%;border-collapse:collapse;font-size:10.5px}
+.prog-table thead tr{background:var(--fac);color:#fff}
+.prog-table thead th{padding:9px 12px;text-align:left;font-size:9px;letter-spacing:1px;font-weight:700;white-space:nowrap}
+.prog-table thead th.td-c{text-align:center}
+.prog-table tbody tr{border-bottom:1px solid var(--border);transition:background .12s}
+.prog-table tbody tr:hover{background:#EBF3FF}
+.prog-table tbody tr:nth-child(even){background:#F4F8FF}
+.prog-table td{padding:7px 12px;vertical-align:top}
+.td-n{font-weight:600;color:var(--navy)}.td-c{text-align:center}.td-bold{font-weight:700}
+.sz-row td{background:var(--fac2)!important;color:#fff;font-weight:700;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:6px 12px}
+.zone-row td{background:var(--fac)!important;color:#fff;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:8px 12px;font-size:10px}
+.st-row td{background:#DDEEFF!important;font-weight:700;color:var(--fac);border-top:2px solid var(--fac3)}
+.tot-row td{background:var(--fac)!important;color:#fff;font-weight:700;font-size:11px;border-top:3px solid var(--gold)}
+
+.badge{border-radius:3px;padding:2px 8px;font-size:9px;font-weight:700;color:#fff;display:inline-block}
+.b-fac{background:var(--fac)}.b-navy{background:var(--navy)}.b-green{background:var(--green)}
+.b-share{background:var(--gold);color:var(--navy)}.b-steel{background:var(--steel)}.b-orange{background:var(--orange)}
+
+.src{font-size:9px;color:#7A8FA6;margin-top:6px;font-style:italic}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:18px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+
+.kpi-prog{background:#fff;border:1px solid var(--border);padding:16px;text-align:center;border-top:3px solid var(--fac)}
+.kpi-v{font-size:24px;font-weight:800;color:var(--fac);font-family:Georgia,serif}
+.kpi-l{font-size:10px;font-weight:700;color:var(--text);margin-top:4px}
+.kpi-s{font-size:9px;color:var(--steel);margin-top:2px}
+
+.param-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.param{background:#fff;border:1px solid var(--border);padding:12px 14px;border-top:2px solid var(--fac);text-align:center}
+.param-v{font-size:18px;font-weight:800;color:var(--fac);font-family:Georgia,serif}
+.param-l{font-size:9px;color:var(--text);font-weight:600;margin-top:3px}
+.param-s{font-size:8px;color:var(--steel);margin-top:2px}
+
+.nota-shared{background:#FFF9E6;border:1px solid var(--gold);border-left:4px solid var(--gold);padding:12px 16px;margin-bottom:14px;font-size:10px;line-height:1.7;color:var(--text)}
+
+.carrera-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.carrera-card{background:#fff;border:1px solid var(--border);border-left:4px solid var(--fac);padding:14px 16px;transition:all .2s}
+.carrera-card:hover{border-left-color:var(--gold);box-shadow:0 3px 10px rgba(0,0,0,.08)}
+.cc-icon{font-size:22px;margin-bottom:6px}
+.cc-name{font-size:11px;font-weight:700;color:var(--fac);margin-bottom:4px}
+.cc-est{font-size:9px;color:var(--steel)}
+.cc-areas{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.cc-area{font-size:8px;background:var(--light);color:var(--navy);padding:2px 7px;border-radius:20px;font-weight:600}
+
+/* ORGANIGRAMA */
+.organo-wrap{background:#fff;border:1px solid var(--border);padding:24px;margin-bottom:18px}
+.org-title{font-size:10px;font-weight:700;color:var(--fac);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.org-title::after{content:'';flex:1;height:1px;background:var(--light)}
+.org-tree{display:flex;flex-direction:column;align-items:center;gap:0}
+.org-box{padding:8px 14px;border-radius:4px;font-size:9px;font-weight:700;text-align:center;min-width:110px;max-width:175px;letter-spacing:.5px;line-height:1.4;transition:all .2s;cursor:default}
+.org-box:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.org-box.root{background:var(--fac);color:#fff;font-size:10px;min-width:240px;border-bottom:3px solid var(--gold)}
+.org-box.l1{background:var(--fac2);color:#fff}
+.org-box.l3{background:var(--light);color:var(--fac);border:1px solid var(--fac3)}
+.org-box.shared-box{background:var(--gold);color:var(--navy);border:2px solid var(--gold)}
+.org-box.service-box{background:var(--steel);color:#fff}
+.org-box.tech-box{background:#0A3D6B;color:#fff}
+.org-box.research-box{background:var(--navy2);color:#fff}
+.org-line-down{width:2px;height:20px;background:var(--fac3);margin:0 auto}
+.org-flex-row{display:flex;gap:14px;justify-content:center;align-items:flex-start;flex-wrap:wrap;padding-top:0;position:relative}
+.org-flex-row::before{content:'';position:absolute;top:0;left:8%;right:8%;height:2px;background:var(--fac3)}
+.org-flex-item{display:flex;flex-direction:column;align-items:center}
+.org-vline{width:2px;height:16px;background:var(--fac3);margin:0 auto}
+
+.leyenda{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:9px;padding:10px 14px;background:var(--light)}
+.ley-item{display:flex;align-items:center;gap:5px}
+.ley-dot{width:14px;height:10px;border-radius:2px}
+
+.summary-box{background:var(--fac);color:#fff;padding:24px 28px;margin-top:32px}
+.summary-title{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:16px}
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.sg-item{text-align:center;padding:12px 8px;background:rgba(255,255,255,.08);border-radius:4px}
+.sg-v{font-size:22px;font-weight:800;color:var(--gold);font-family:Georgia,serif}
+.sg-l{font-size:9px;color:rgba(255,255,255,.7);margin-top:4px;line-height:1.4}
+
+.ftr{background:#EEF2F6;border-top:2px solid var(--fac);padding:14px 48px;font-size:9px;color:#5A6E82}
+.ftr-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 32px;line-height:1.8}
+@media(max-width:900px){.cnt,.cover,.ftr{padding:16px 20px}.g2,.g3,.g4,.param-grid,.carrera-cards,.summary-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<!-- PORTADA -->
+<div class="cover">
+  <div class="cover-num">F3</div>
+  <div class="cover-super">Programa Arquitectónico — Campus Técnico Interprovincial Zona 6</div>
+  <div class="cover-title">Facultad de Ingeniería, Tecnología e Informática</div>
+  <div class="cover-sub">PROGRAMA ARQUITECTÓNICO DETALLADO · ORGANIGRAMA FUNCIONAL · JUSTIFICACIÓN</div>
+  <div class="cover-chips">
+    <span class="chip gold">9 CARRERAS</span>
+    <span class="chip">~2.700 ESTUDIANTES</span>
+    <span class="chip">FASE MADURA</span>
+    <span class="chip">ZONA 6 — AZUAY · CAÑAR · MORONA SANTIAGO</span>
+    <span class="chip">PROYECTOS VI — 2025</span>
+  </div>
+  <div class="cover-meta">
+    <div class="cm"><div class="cm-v">9</div><div class="cm-l">Carreras tecnológicas</div></div>
+    <div class="cm"><div class="cm-v">~2.700</div><div class="cm-l">Estudiantes activos</div></div>
+    <div class="cm"><div class="cm-v">12.800</div><div class="cm-l">m² construidos</div></div>
+    <div class="cm"><div class="cm-v">9,7</div><div class="cm-l">m²/estudiante</div></div>
+    <div class="cm"><div class="cm-v">3.200</div><div class="cm-l">m² exteriores / prácticas</div></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <a href="#intro">💻 Introducción</a>
+  <a href="#parametros">📐 Parámetros</a>
+  <a href="#carreras">🎓 Carreras</a>
+  <a href="#z1">Z1 Académica</a>
+  <a href="#z2">Z2 Labs Software/IA</a>
+  <a href="#z3">Z3 Labs Hardware</a>
+  <a href="#z4">Z4 Talleres Electromec.</a>
+  <a href="#z5">Z5 Infraestr. Digital</a>
+  <a href="#z6">Z6 Admin.</a>
+  <a href="#z7">Z7 Investigación</a>
+  <a href="#z8">Z8 Servicios</a>
+  <a href="#organo">🔗 Organigrama</a>
+  <a href="#resumen">📊 Resumen</a>
+</div>
+
+<div class="cnt">
+
+<!-- ══ INTRO ══ -->
+<div class="section" id="intro">
+  <div class="sec-header">
+    <div class="sec-num">01</div>
+    <div><div class="sec-title">Introducción y Contexto</div><div class="sec-sub">Justificación académica y territorial de la facultad</div></div>
+  </div>
+  <div class="justif">
+    <div class="justif-t">JUSTIFICACIÓN GENERAL</div>
+    <p>La <strong>Facultad de Ingeniería, Tecnología e Informática</strong> es el núcleo estratégico del campus técnico de la Zona 6. El WEF Future of Jobs 2025 proyecta que los perfiles de Desarrollo de Software, IA, Ciberseguridad y Electrónica lideran el crecimiento de empleo global (30–42% al 2027), con escasez crítica de talento técnico de nivel medio. Ecuador reporta que la ciberseguridad es el sector con mayor brecha de talento en el país (Primicias dic. 2024), y el Tec. Azuay opera actualmente con alta empleabilidad en sus carreras de software y mecatrónica. Sin embargo, su cobertura es exclusiva de Cuenca: Cañar y Morona Santiago no tienen ninguna oferta técnica en TI, electrónica ni automatización. Esta facultad, la de mayor volumen estudiantil del campus (9 carreras / 2.700 estudiantes), responde directamente al Acuerdo SENESCYT-2023-0033-AC que declara de interés público las carreras en Ciencias Computacionales/TIC, Ingeniería y Automatización.</p>
+    <p style="margin-top:8px"><strong>Fuentes:</strong> WEF FoJ 2025 (weforum.org); Primicias dic. 2024 (ciberseguridad escasez); SENESCYT Acuerdo 2023-0033-AC (educacionsuperior.gob.ec); Tec. Azuay 2024 (tecazuay.edu.ec); SENESCYT oferta Zona 6 2022; OIT/Cinterfor 2017 (ISBN: 978-92-9088-274-9).</p>
+  </div>
+  <div class="nota-shared">
+    <strong>🔶 ÁREAS COMPARTIDAS:</strong> Esta facultad por su mayor volumen estudiantil (2.700 vs 1.800 de las otras dos) absorbe el <strong>~38% de los espacios compartidos del campus</strong>. Los espacios <span class="badge b-share">COMPARTIDA CAMPUS</span> incluyen comedor, auditorio, biblioteca general, deportes y bienestar. Los <span class="badge b-fac">COMPARTIDA FACULTAD</span> son de uso común entre las 9 carreras de esta facultad únicamente. Algunos laboratorios de esta facultad (robótica, electrónica avanzada) también pueden ser usados por la Facultad de Ecología (automatización de sensores ambientales) y Mercadotecnia (infraestructura digital), en régimen de reserva.
+  </div>
+</div>
+
+<!-- ══ PARÁMETROS ══ -->
+<div class="section" id="parametros">
+  <div class="sec-header">
+    <div class="sec-num">02</div>
+    <div><div class="sec-title">Parámetros de Diseño</div><div class="sec-sub">Bases cuantitativas del programa — 9 carreras / 2.700 estudiantes</div></div>
+  </div>
+  <div class="param-grid">
+    <div class="param"><div class="param-v">2.700</div><div class="param-l">Estudiantes activos (fase madura)</div><div class="param-s">9 carreras × 300 est. · 5 semestres simultáneos</div></div>
+    <div class="param"><div class="param-v">1,8 m²</div><div class="param-l">Por est. — aula teórica</div><div class="param-s">MINEDU Perú RVM N° 140-2021 · MinEduc Ecuador</div></div>
+    <div class="param"><div class="param-v">3,5 m²</div><div class="param-l">Por est. — laboratorio TI/software</div><div class="param-s">Neufert 2013 · SENESCYT PRETT 2021</div></div>
+    <div class="param"><div class="param-v">5,5 m²</div><div class="param-l">Por est. — taller electromecánico</div><div class="param-s">Neufert 2013 · MINEDU Perú 2021</div></div>
+    <div class="param"><div class="param-v">40 est.</div><div class="param-l">Por aula teórica estándar</div><div class="param-s">CES Ecuador — Reglamento Régimen Académico 2022</div></div>
+    <div class="param"><div class="param-v">20 est.</div><div class="param-l">Por laboratorio especializado</div><div class="param-s">MINEDU Perú 2021 · SENESCYT PRETT</div></div>
+    <div class="param"><div class="param-v">9,7 m²</div><div class="param-l">m² construidos / estudiante</div><div class="param-s">Entre FEUP (9 m²) y norma LATAM (14 m²)</div></div>
+    <div class="param"><div class="param-v">30%</div><div class="param-l">Factor circulación y estructura</div><div class="param-s">Sobre área neta programada</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Base de cálculo — distribución de estudiantes por carrera</div>
+    <div class="prog-table-wrap" style="border:none;margin:0">
+    <table class="prog-table">
+      <thead><tr><th>Carrera</th><th class="td-c">Duración</th><th class="td-c">Cupos/cohorte</th><th class="td-c">Est. activos</th><th class="td-c">Est. simultáneos</th><th class="td-c">Énfasis espacial</th></tr></thead>
+      <tbody>
+        <tr><td class="td-n">Tecnología en Desarrollo de Software</td><td class="td-c">5 sem.</td><td class="td-c">60</td><td class="td-c">300</td><td class="td-c">150</td><td>Lab. programación + sala código</td></tr>
+        <tr><td class="td-n">Tecnología en Sistemas Informáticos</td><td class="td-c">5 sem.</td><td class="td-c">60</td><td class="td-c">300</td><td class="td-c">150</td><td>Lab. redes + sala servidores</td></tr>
+        <tr><td class="td-n">Tecnología en Redes y Telecomunicaciones</td><td class="td-c">5 sem.</td><td class="td-c">60</td><td class="td-c">300</td><td class="td-c">150</td><td>Lab. redes + rack de práctica</td></tr>
+        <tr><td class="td-n">Tecnología en Electrónica</td><td class="td-c">5 sem.</td><td class="td-c">60</td><td class="td-c">300</td><td class="td-c">150</td><td>Taller electrónica + lab. circuitos</td></tr>
+        <tr><td class="td-n">Tecnología en Mecatrónica</td><td class="td-c">5 sem.</td><td class="td-c">60</td><td class="td-c">300</td><td class="td-c">150</td><td>Taller mecánico + lab. robótica</td></tr>
+        <tr><td class="td-n">Tecnología en Electricidad</td><td class="td-c">5 sem.</td><td class="td-c">60</td><td class="td-c">300</td><td class="td-c">150</td><td>Taller eléctrico + sala paneles</td></tr>
+        <tr><td class="td-n">Tecnología en Automatización Industrial</td><td class="td-c">5 sem.</td><td class="td-c">60</td><td class="td-c">300</td><td class="td-c">150</td><td>Lab. PLC/SCADA + celda robótica</td></tr>
+        <tr><td class="td-n">Tecnología en Soporte Técnico</td><td class="td-c">5 sem.</td><td class="td-c">60</td><td class="td-c">300</td><td class="td-c">150</td><td>Lab. hardware + taller ensamble</td></tr>
+        <tr><td class="td-n">Tecnología en Inteligencia Artificial</td><td class="td-c">5 sem.</td><td class="td-c">60</td><td class="td-c">300</td><td class="td-c">150</td><td>Lab. HPC + sala data science</td></tr>
+        <tr class="tot-row"><td class="td-bold">TOTAL FACULTAD</td><td class="td-c">—</td><td class="td-c td-bold">540 cupos/cohorte</td><td class="td-c td-bold">2.700</td><td class="td-c td-bold">1.350 simultáneos</td><td>—</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="src"><strong>Fuente:</strong> CES Ecuador — Reglamento Régimen Académico 2022; SENESCYT PRETT 2021; Tec. Azuay 2024 (referente: desarrollo de software, mecatrónica, ciberseguridad activas).</p>
+  </div>
+</div>
+
+<!-- ══ CARRERAS ══ -->
+<div class="section" id="carreras">
+  <div class="sec-header">
+    <div class="sec-num">03</div>
+    <div><div class="sec-title">Perfil de las Carreras</div><div class="sec-sub">Enfoque, campo laboral y requerimientos espaciales específicos</div></div>
+  </div>
+  <div class="carrera-cards">
+    <div class="carrera-card"><div class="cc-icon">👨‍💻</div><div class="cc-name">Tecnología en Desarrollo de Software</div><div class="cc-est">300 est. · 5 sem. · Diurna/Nocturna</div><p style="font-size:10px;margin-top:6px;line-height:1.65">Técnicos en programación web, móvil y de escritorio. Lenguajes: Python, JavaScript, Java, PHP. Sector: empresas TI Cuenca, startups, teletrabajo. WEF 2025: perfil de más rápido crecimiento global.</p><div class="cc-areas"><span class="cc-area">Lab. Programación</span><span class="cc-area">Sala DevOps</span><span class="cc-area">Servidores</span></div></div>
+    <div class="carrera-card"><div class="cc-icon">🖥️</div><div class="cc-name">Tecnología en Sistemas Informáticos</div><div class="cc-est">300 est. · 5 sem. · Diurna/Nocturna</div><p style="font-size:10px;margin-top:6px;line-height:1.65">Técnicos en administración de sistemas, bases de datos, virtualización y cloud computing. Sector: empresas medianas, hospitales, GADs, sector financiero de Cuenca (Cooperativas de ahorro).</p><div class="cc-areas"><span class="cc-area">Lab. Servidores</span><span class="cc-area">Lab. Cloud</span><span class="cc-area">Sala BD</span></div></div>
+    <div class="carrera-card"><div class="cc-icon">🌐</div><div class="cc-name">Tecnología en Redes y Telecomunicaciones</div><div class="cc-est">300 est. · 5 sem. · Diurna</div><p style="font-size:10px;margin-top:6px;line-height:1.65">Técnicos en diseño, implementación y mantenimiento de redes LAN/WAN, fibra óptica y sistemas de comunicación. Alta demanda en Morona Santiago (conectividad rural) y sector industrial de Cuenca.</p><div class="cc-areas"><span class="cc-area">Lab. Redes</span><span class="cc-area">Rack de práctica</span><span class="cc-area">Fibra óptica</span></div></div>
+    <div class="carrera-card"><div class="cc-icon">⚡</div><div class="cc-name">Tecnología en Electrónica</div><div class="cc-est">300 est. · 5 sem. · Diurna</div><p style="font-size:10px;margin-top:6px;line-height:1.65">Técnicos en diseño y mantenimiento de circuitos electrónicos, instrumentación, PCB y sistemas embebidos. Sector: industria manufacturera de Cuenca (Indurama, FIBROACERO), sector salud.</p><div class="cc-areas"><span class="cc-area">Taller circuitos</span><span class="cc-area">Lab. instrumentación</span><span class="cc-area">PCB</span></div></div>
+    <div class="carrera-card"><div class="cc-icon">🤖</div><div class="cc-name">Tecnología en Mecatrónica</div><div class="cc-est">300 est. · 5 sem. · Diurna</div><p style="font-size:10px;margin-top:6px;line-height:1.65">Técnicos en sistemas mecatrónicos integrados: robótica, automatismos, sensórica y actuadores. Alta pertinencia con el Parque Industrial de Cuenca y el sector agroindustrial de Morona Santiago.</p><div class="cc-areas"><span class="cc-area">Lab. Robótica</span><span class="cc-area">Taller mecánico</span><span class="cc-area">Sensórica</span></div></div>
+    <div class="carrera-card"><div class="cc-icon">🔌</div><div class="cc-name">Tecnología en Electricidad</div><div class="cc-est">300 est. · 5 sem. · Diurna/Nocturna</div><p style="font-size:10px;margin-top:6px;line-height:1.65">Técnicos en instalaciones eléctricas residenciales, industriales y energías renovables (solar, micro-hidro). Alta demanda en el sector de la construcción y en proyectos de electrificación rural de Morona y Cañar.</p><div class="cc-areas"><span class="cc-area">Taller eléctrico</span><span class="cc-area">Panel solar</span><span class="cc-area">Subestación</span></div></div>
+    <div class="carrera-card"><div class="cc-icon">⚙️</div><div class="cc-name">Tecnología en Automatización Industrial</div><div class="cc-est">300 est. · 5 sem. · Diurna</div><p style="font-size:10px;margin-top:6px;line-height:1.65">Técnicos en programación de PLCs, SCADA, HMI y sistemas de control industrial. Alta demanda en el Parque Industrial Cuenca (textil, plásticos, metalmecánica, alimentos). WEF 2025: automatización +34% al 2027.</p><div class="cc-areas"><span class="cc-area">Lab. PLC/SCADA</span><span class="cc-area">Celda robótica</span><span class="cc-area">Neumática</span></div></div>
+    <div class="carrera-card"><div class="cc-icon">🛠️</div><div class="cc-name">Tecnología en Soporte Técnico</div><div class="cc-est">300 est. · 5 sem. · Diurna/Nocturna</div><p style="font-size:10px;margin-top:6px;line-height:1.65">Técnicos en mantenimiento de hardware, soporte de usuarios, gestión de activos TI e ITIL. Alta demanda en GADs, instituciones educativas y empresas medianas. Perfil con mayor empleabilidad inmediata al egreso.</p><div class="cc-areas"><span class="cc-area">Lab. hardware</span><span class="cc-area">Taller ensamble</span><span class="cc-area">Mesa de ayuda</span></div></div>
+    <div class="carrera-card"><div class="cc-icon">🧠</div><div class="cc-name">Tecnología en Inteligencia Artificial</div><div class="cc-est">300 est. · 5 sem. · Diurna</div><p style="font-size:10px;margin-top:6px;line-height:1.65">Técnicos en machine learning, visión computacional, procesamiento de lenguaje natural y despliegue de modelos de IA. WEF 2025: Big Data/IA +42%. Carrera emergente sin equivalente en ningún instituto de la Zona 6.</p><div class="cc-areas"><span class="cc-area">Lab. HPC/GPU</span><span class="cc-area">Sala Data Science</span><span class="cc-area">Lab. ML</span></div></div>
+  </div>
+  <p class="src"><strong>Fuente:</strong> WEF FoJ 2025; Primicias dic. 2024 (escasez ciberseguridad/TI); Tec. Azuay 2024 (carreras activas: software, mecatrónica, big data, ciberseguridad); SENESCYT Acuerdo 2023-0033-AC; Cámara de Comercio Cuenca 2023.</p>
+</div>
+
+<!-- ══ ZONA 1: ACADÉMICA ══ -->
+<div class="section" id="z1">
+  <div class="sec-header">
+    <div class="sec-num">Z1</div>
+    <div><div class="sec-title">Zona Académica — Aulas Teóricas y TIC</div><div class="sec-sub">Enseñanza formal · 1,8 m²/estudiante · 9 carreras · 1.350 est. simultáneos</div></div>
+  </div>
+  <div class="justif">
+    <div class="justif-t">JUSTIFICACIÓN ZONA 1</div>
+    <p>Con 1.350 estudiantes simultáneos (50% de 2.700) y un 40% en aula teórica en cualquier momento, se necesitan 540 estudiantes cubiertos por aulas teóricas simultáneamente, lo que equivale a 14 aulas de 40 estudiantes. Se añaden aulas TIC integradas para el 60% restante que alterna entre práctica en laboratorio y teoría. Las 9 carreras comparten un núcleo de fundamentos (matemáticas, física, inglés técnico, gestión de proyectos) que racionaliza el uso de las aulas estándar. Se incorporan salas tipo <em>hackathon</em> y <em>scrum room</em> propias de la cultura TI, ausentes en los institutos tradicionales.
+    <br><strong>Fuente:</strong> CES Ecuador — Reglamento Régimen Académico 2022; MINEDU Perú RVM N° 140-2021 (1,8 m²/est.); Neufert E. (2013) 16ª ed. p. 245–262; GitHub Education — infraestructura para aulas de programación 2023.</p>
+  </div>
+  <div class="prog-table-wrap">
+    <table class="prog-table">
+      <thead><tr><th>N°</th><th>Ambiente</th><th>Descripción / Equipamiento</th><th class="td-c">Cap.</th><th class="td-c">Cant.</th><th class="td-c">m² neto c/u</th><th class="td-c">m² neto total</th><th>Carreras</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr class="zone-row"><td colspan="9">ZONA 1 — ZONA ACADÉMICA (AULAS TEÓRICAS Y TIC)</td></tr>
+        <tr class="sz-row"><td colspan="9">1.1 — AULAS TEÓRICAS ESTÁNDAR</td></tr>
+        <tr><td>1.1.1</td><td class="td-n">Aula teórica tipo A-40</td><td>Escritorios con tableta abatible, pizarrón blanco acrílico 2,40 m, proyector HD + pantalla motorizada, sistema de audio, iluminación LED, 2 puertas emergencia, toma corriente por puesto, soporte HDMI + wireless para presentaciones</td><td class="td-c">40</td><td class="td-c">14</td><td class="td-c">72</td><td class="td-c td-bold">1.008</td><td>Todas las carreras (núcleo común)</td><td></td></tr>
+        <tr><td>1.1.2</td><td class="td-n">Aula seminario tipo B-25 (técnica)</td><td>Mesas modulares agrupables, sillas, proyector portátil, pizarrón doble cara, WiFi alta densidad, configuración flexible, panel acústico lateral, pantalla secundaria para código fuente en paralelo</td><td class="td-c">25</td><td class="td-c">6</td><td class="td-c">50</td><td class="td-c td-bold">300</td><td>Todas las carreras</td><td></td></tr>
+        <tr class="sz-row"><td colspan="9">1.2 — AULAS TIC INTEGRADAS (COMPUTADORES DE PROGRAMACIÓN)</td></tr>
+        <tr><td>1.2.1</td><td class="td-n">Aula TIC-Programación (30 puestos)</td><td>30 PC workstation (AMD Ryzen 9 / Intel i9, 32 GB RAM, SSD 1 TB, pantalla 27" IPS), teclados mecánicos, ratón gaming de precisión, software: VS Code, PyCharm, IntelliJ IDEA, Eclipse, Git/GitHub, Docker, VMware Workstation, Linux Ubuntu dual-boot, sistema de evaluación automatizada (HackerRank / Moodle integrado), proyector 4K, pantalla secundaria docente, cableado Cat 6A, switch de 48 puertos por sala, UPS por zona de 10 puestos</td><td class="td-c">30</td><td class="td-c">4</td><td class="td-c">90</td><td class="td-c td-bold">360</td><td>Desarrollo Software / Sistemas Informáticos / IA</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr><td>1.2.2</td><td class="td-n">Aula TIC-Redes y Administración (25 puestos)</td><td>25 PC workstation (i7, 16 GB RAM, SSD), software: Cisco Packet Tracer, GNS3, Wireshark, VMware vSphere, Microsoft Azure Student, AWS Academy, Oracle VirtualBox, Active Directory, acceso a consola de gestión de switches Cisco físicos en rack adjunto (2 racks de 12U con switches Layer 2/3 y routers para práctica), pantalla 32" por puesto</td><td class="td-c">25</td><td class="td-c">3</td><td class="td-c">80</td><td class="td-c td-bold">240</td><td>Redes y Telecom. / Sistemas Informáticos / Soporte</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr><td>1.2.3</td><td class="td-n">Sala Hackathon / Scrum Room</td><td>Espacio open-plan para 30 personas (mesas en islas de 6), 6 pantallas de 55" (1 por isla), pizarrones en 3 muros, tableros Kanban físicos + proyección Jira/Trello, sistema de temporización (pomodoro), conectividad 10 Gbps, tomas corriente cada 1,5 m, iluminación RGB regulable, zona de refrigerios (nevera pequeña, microondas), alfombra de trabajo en el suelo para sprint planning, acceso 24/7 con carné estudiantil</td><td class="td-c">30</td><td class="td-c">2</td><td class="td-c">80</td><td class="td-c td-bold">160</td><td>Desarrollo Software / IA / Automatización</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr><td>1.2.4</td><td class="td-n">Sala de presentaciones técnicas (demos/jurado)</td><td>40 sillas apilables, proyector 4K + pantalla 120", sistema de videoconferencia HD (Zoom Rooms), pantalla secundaria para código en vivo, conexión a red de laboratorios (demo remota), micrófono inalámbrico, acceso independiente para evaluadores externos</td><td class="td-c">40</td><td class="td-c">1</td><td class="td-c">70</td><td class="td-c td-bold">70</td><td>Todas las carreras (defensas y demos)</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr class="sz-row"><td colspan="9">1.3 — CIRCULACIÓN ACADÉMICA</td></tr>
+        <tr><td>1.3.1</td><td class="td-n">Corredor principal de aulas</td><td>Ancho mínimo 2,40 m, cartelera digital (pantallas 32" con repositorio de proyectos QR), puntos de carga de laptops, señalética de carrera, iluminación LED</td><td class="td-c">—</td><td class="td-c">1</td><td class="td-c">200</td><td class="td-c td-bold">200</td><td>Todos</td><td></td></tr>
+        <tr><td>1.3.2</td><td class="td-n">Hall de distribución por planta</td><td>Área de espera, tablero digital de proyectos destacados, plano de evacuación, acceso escaleras/ascensor</td><td class="td-c">—</td><td class="td-c">4</td><td class="td-c">40</td><td class="td-c td-bold">160</td><td>Todos</td><td></td></tr>
+        <tr class="st-row"><td colspan="6" class="td-bold">SUBTOTAL ZONA 1 — Área Neta</td><td class="td-c td-bold">2.498 m²</td><td colspan="2"></td></tr>
+        <tr class="st-row" style="background:#D0E8FF!important"><td colspan="6" class="td-bold">SUBTOTAL ZONA 1 — Área Bruta (+30%)</td><td class="td-c td-bold">3.247 m²</td><td colspan="2"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src"><strong>Fuente:</strong> MINEDU Perú RVM N° 140-2021; MinEduc Ecuador UEM BID-2017; Neufert E. (2013) 16ª ed. p. 245–262; CES Ecuador 2022; Cisco Networking Academy — infraestructura recomendada para aulas de redes (netacad.com); GitHub Education — classroom setup guides (education.github.com).</p>
+
+  <div class="organo-wrap">
+    <div class="org-title">Organigrama funcional — Zona Académica (Z1)</div>
+    <div class="org-tree">
+      <div class="org-flex-row" style="gap:0;flex-direction:column;align-items:center">
+        <div class="org-box root" style="margin-bottom:0">ZONA ACADÉMICA (Z1) — 3.247 m² brutos</div>
+        <div class="org-line-down"></div>
+        <div class="org-flex-row">
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l1">14 Aulas Tipo A<br><small>1.008 m²</small></div></div>
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l1">6 Aulas Seminario B<br><small>300 m²</small></div></div>
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l1">4 Aulas TIC Prog.<br><small>360 m²</small></div></div>
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l1">3 Aulas TIC Redes<br><small>240 m²</small></div></div>
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l1">2 Hackathon/Scrum<br><small>160 m²</small></div></div>
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l1">Sala Demos<br><small>70 m²</small></div></div>
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box service-box">Corredor + Halls<br><small>360 m²</small></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ZONA 2: LABS SOFTWARE / IA ══ -->
+<div class="section" id="z2">
+  <div class="sec-header">
+    <div class="sec-num">Z2</div>
+    <div><div class="sec-title">Zona de Laboratorios de Software, IA y Ciberseguridad</div><div class="sec-sub">Formación práctica digital · 3,5 m²/estudiante · 20 est./lab</div></div>
+  </div>
+  <div class="justif">
+    <div class="justif-t">JUSTIFICACIÓN ZONA 2</div>
+    <p>Los laboratorios de software e IA son el corazón de las carreras digitales. Requieren alta capacidad de procesamiento (GPU para ML/IA), refrigeración eficiente, alimentación eléctrica estabilizada, conectividad de alta velocidad (10 Gbps internos, fibra óptica a internet de 1 Gbps) y acceso a plataformas cloud académicas. La referencia de diseño proviene del MIT CSAIL (Computer Science and Artificial Intelligence Laboratory), la Cisco Networking Academy y el laboratorio de Ciberseguridad del SENA Colombia — todos con estándar de 3,5–4,5 m²/estudiante para estos espacios.
+    <br><strong>Fuente:</strong> MIT CSAIL — infraestructura de laboratorios (csail.mit.edu); Cisco Networking Academy — Academy Lab Design Guide 2023 (netacad.com); SENA Colombia — Laboratorio Ciberseguridad diseño 2022 (sena.edu.co); MINEDU Perú RVM N° 140-2021; Neufert E. (2013) 16ª ed. p. 266–280.</p>
+  </div>
+  <div class="prog-table-wrap">
+    <table class="prog-table">
+      <thead><tr><th>N°</th><th>Ambiente / Laboratorio</th><th>Descripción y equipamiento</th><th class="td-c">Cap.</th><th class="td-c">Cant.</th><th class="td-c">m² neto c/u</th><th class="td-c">m² neto total</th><th>Carreras</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr class="zone-row"><td colspan="9">ZONA 2 — LABORATORIOS SOFTWARE, IA Y CIBERSEGURIDAD</td></tr>
+        <tr class="sz-row"><td colspan="9">2.1 — LABORATORIOS DE DESARROLLO DE SOFTWARE Y SISTEMAS</td></tr>
+        <tr><td>2.1.1</td><td class="td-n">Laboratorio de Desarrollo de Software Avanzado</td>
+          <td>20 estaciones workstation de alto rendimiento (AMD Ryzen 9 7900X, 64 GB RAM DDR5, SSD NVMe 2 TB, GPU RTX 4060 Ti), doble pantalla 27" por puesto, teclados mecánicos programables, ambiente de desarrollo completo: Docker, Kubernetes, Jenkins CI/CD, GitLab local, SonarQube, PostgreSQL/MySQL/MongoDB, Redis, servidor de pruebas en rack propio (2U por lab), conexión 10 Gbps, climatización precisa (20–22°C), piso técnico elevado para cableado, paneles acústicos laterales (reducción de ruido de teclado)</td>
+          <td class="td-c">20</td><td class="td-c">3</td><td class="td-c">80</td><td class="td-c td-bold">240</td>
+          <td>Desarrollo Software</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr><td>2.1.2</td><td class="td-n">Laboratorio de Bases de Datos y Cloud Computing</td>
+          <td>20 workstations (i9, 32 GB RAM), acceso a clúster propio PostgreSQL/Oracle/MongoDB (servidor físico en sala de servidores), consola de administración VMware vCenter, acceso a plataformas cloud académicas (AWS Academy Learner Lab, Azure for Students, Google Cloud for Education), herramientas: DBeaver, MySQL Workbench, MongoDB Compass, Tableau/Power BI, acceso a datasets públicos para ejercicios, proyector 4K para review de consultas SQL</td>
+          <td class="td-c">20</td><td class="td-c">2</td><td class="td-c">75</td><td class="td-c td-bold">150</td>
+          <td>Sistemas Informáticos / Desarrollo Software</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr class="sz-row"><td colspan="9">2.2 — LABORATORIOS DE INTELIGENCIA ARTIFICIAL Y DATA SCIENCE</td></tr>
+        <tr><td>2.2.1</td><td class="td-n">Laboratorio de Machine Learning e IA (HPC)</td>
+          <td>12 estaciones de cómputo de alto rendimiento (AMD Threadripper Pro 5975WX, 128 GB RAM ECC, GPU NVIDIA RTX 4090 × 2 por estación, SSD NVMe 4 TB), acceso a clúster GPU local (4 servidores NVIDIA DGX A100 compartido con estaciones), software: TensorFlow, PyTorch, Keras, scikit-learn, Jupyter Notebook (JupyterHub institucional), Python Anaconda, CUDA, cuDNN, Hugging Face, OpenCV, acce so a datasets curados (Kaggle + repositorio local), pantalla 32" 4K por puesto, refrigeración líquida por estación (alto TDP), climatización dedicada (18°C)</td>
+          <td class="td-c">12</td><td class="td-c">2</td><td class="td-c">80</td><td class="td-c td-bold">160</td>
+          <td>Inteligencia Artificial</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr><td>2.2.2</td><td class="td-n">Laboratorio de Data Science y Visualización</td>
+          <td>20 workstations (Ryzen 9, 32 GB RAM, GPU RTX 3070), software: R Studio, Python (pandas, NumPy, matplotlib, seaborn, Plotly), Tableau Desktop, Power BI Desktop, Apache Spark (clúster local 4 nodos), KNIME, Orange Data Mining, acceso a Kaggle API, pantalla 27" + pantalla secundaria 24" para visualizaciones, impresora de infografías (A1), pizarrón tipo Kanban para gestión de proyectos de análisis</td>
+          <td class="td-c">20</td><td class="td-c">1</td><td class="td-c">75</td><td class="td-c td-bold">75</td>
+          <td>Inteligencia Artificial / Desarrollo Software</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr class="sz-row"><td colspan="9">2.3 — LABORATORIO DE CIBERSEGURIDAD</td></tr>
+        <tr><td>2.3.1</td><td class="td-n">Laboratorio de Ciberseguridad — Ethical Hacking</td>
+          <td>20 workstations (i9, 32 GB RAM, SSD 1 TB), sistema de red aislada de producción (VLAN dedicada sin acceso a internet real durante prácticas), Kali Linux + Parrot OS dual boot, software: Metasploit Framework, Nmap, Wireshark, Burp Suite Professional, OWASP ZAP, Nessus Essentials, Hashcat, John the Ripper, entorno de práctica de CTF (Capture the Flag) local (TryHackMe/HackTheBox offline), máquinas virtuales de práctica (Ubuntu Server, Windows Server vulnerables), sala blindada electromagnéticamente (jaula de Faraday parcial — paredes con malla metálica), señalética de zona restringida, acceso con huella + carné, monitor de seguridad docente con visibilidad de todas las estaciones</td>
+          <td class="td-c">20</td><td class="td-c">1</td><td class="td-c">90</td><td class="td-c td-bold">90</td>
+          <td>Sistemas Informáticos / Desarrollo Software</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr><td>2.3.2</td><td class="td-n">Sala de Operaciones (SOC simulado)</td>
+          <td>10 puestos de operaciones (dual pantalla 24"), pared de monitores (2×5 pantallas 43", sistema SIEM: Splunk / IBM QRadar académico), sistema de ticketing (TheHive), herramientas forenses: Autopsy, FTK Imager, Volatility, servidor de logs centralizado, pantalla de estado de red en tiempo real, manuales de respuesta a incidentes, simulación de incidentes cibernéticos en tiempo real con docente como atacante simulado</td>
+          <td class="td-c">10</td><td class="td-c">1</td><td class="td-c">50</td><td class="td-c td-bold">50</td>
+          <td>Sistemas Informáticos</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr class="sz-row"><td colspan="9">2.4 — INFRAESTRUCTURA DE SOPORTE</td></tr>
+        <tr><td>2.4.1</td><td class="td-n">Cuarto de servidores y NAS de la facultad</td>
+          <td>Sala de servidores 40 m² (temperatura 18–20°C, humedad 40–60%), rack 42U × 6 unidades: servidores de virtualización (VMware vCenter, Proxmox VE), NAS de almacenamiento 500 TB RAID-6 (Synology Enterprise), sistema de backup (Veeam), switches core 10 GbE, firewall físico (FortiGate 200G), sistema UPS de sala (APC Symmetra, 30 kVA), generador de emergencia (15 kVA), piso técnico elevado, sistema contra incendios (CO₂), CCTV interno, control de acceso biométrico</td>
+          <td class="td-c">—</td><td class="td-c">1</td><td class="td-c">40</td><td class="td-c td-bold">40</td>
+          <td>Toda la facultad (+ servicio a otras dos facultades)</td><td><span class="badge b-share">COMPARTIDA CAMPUS</span></td></tr>
+        <tr><td>2.4.2</td><td class="td-n">SSHH de zona de laboratorios</td>
+          <td>SSHH h/m separados (2+2 inodoros, lavabos), SSHH discapacidad, acabados cerámicos, dispensadores, extractor</td>
+          <td class="td-c">—</td><td class="td-c">3</td><td class="td-c">22</td><td class="td-c td-bold">66</td><td>Todos</td><td></td></tr>
+        <tr class="st-row"><td colspan="6" class="td-bold">SUBTOTAL ZONA 2 — Área Neta</td><td class="td-c td-bold">871 m²</td><td colspan="2"></td></tr>
+        <tr class="st-row" style="background:#D0E8FF!important"><td colspan="6" class="td-bold">SUBTOTAL ZONA 2 — Área Bruta (+30%)</td><td class="td-c td-bold">1.132 m²</td><td colspan="2"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src"><strong>Fuente:</strong> MIT CSAIL (csail.mit.edu); Cisco Networking Academy — Academy Lab Design Guide 2023 (netacad.com); SENA Colombia — Laboratorio Ciberseguridad (sena.edu.co); NVIDIA — DGX System infrastructure guide (nvidia.com); MINEDU Perú 2021; Neufert 2013.</p>
+
+  <div class="organo-wrap">
+    <div class="org-title">Organigrama funcional — Zona Labs Software/IA (Z2)</div>
+    <div class="org-tree">
+      <div class="org-flex-row" style="flex-direction:column;align-items:center">
+        <div class="org-box root">ZONA LABS SOFTWARE / IA / CIBERSEGURIDAD (Z2) — 1.132 m²</div>
+        <div class="org-line-down"></div>
+        <div class="org-flex-row">
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l1">Labs Desarrollo<br>Software × 3<br><small>240 m²</small></div></div>
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l1">Labs BD + Cloud<br>× 2<br><small>150 m²</small></div></div>
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l1">Labs IA/ML<br>HPC × 2<br><small>160 m²</small></div></div>
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l1">Lab Data Science<br><small>75 m²</small></div></div>
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box tech-box">Lab Ciberseg.<br>+ SOC<br><small>140 m²</small></div></div>
+          <div class="org-flex-item"><div class="org-vline"></div><div class="org-box service-box">Cuarto Servidores<br>+ SSHH<br><small>106 m²</small></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ZONA 3: LABS REDES Y HARDWARE ══ -->
+<div class="section" id="z3">
+  <div class="sec-header">
+    <div class="sec-num">Z3</div>
+    <div><div class="sec-title">Zona de Laboratorios de Redes, Telecomunicaciones y Hardware</div><div class="sec-sub">Práctica con equipos físicos · 3,5 m²/est.</div></div>
+  </div>
+  <div class="justif">
+    <div class="justif-t">JUSTIFICACIÓN ZONA 3</div>
+    <p>Los laboratorios de redes requieren equipos físicos (switches, routers, access points, servidores de rack, patch panels, cableado UTP/fibra) imposibles de reemplazar por simulación para una formación técnica completa. El estándar Cisco Networking Academy exige al menos un rack de equipos reales por cada 5 estudiantes para certificaciones CCNA/CompTIA. El laboratorio de soporte técnico y hardware requiere además bancadas de trabajo con herramientas de ensamble, medición y diagnóstico.
+    <br><strong>Fuente:</strong> Cisco Networking Academy — Academy Lab Design Guide 2023; CompTIA A+ Exam Objectives (2023); SENESCYT PRETT 2021 (laboratorios de redes — p. 52); Tec. Azuay 2024 (lab. redes activo, tecazuay.edu.ec).</p>
+  </div>
+  <div class="prog-table-wrap">
+    <table class="prog-table">
+      <thead><tr><th>N°</th><th>Ambiente</th><th>Descripción y equipamiento</th><th class="td-c">Cap.</th><th class="td-c">Cant.</th><th class="td-c">m² neto c/u</th><th class="td-c">m² neto total</th><th>Carreras</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr class="zone-row"><td colspan="9">ZONA 3 — LABORATORIOS REDES, TELECOMUNICACIONES Y HARDWARE</td></tr>
+        <tr class="sz-row"><td colspan="9">3.1 — LABORATORIO DE REDES Y TELECOMUNICACIONES</td></tr>
+        <tr><td>3.1.1</td><td class="td-n">Laboratorio de Redes LAN/WAN (con racks físicos)</td>
+          <td>20 puestos de trabajo con PC (i7, 16 GB RAM), 10 racks de 12U distribuidos por parejas de puestos, cada rack con: switch Cisco Catalyst 2960/3750 (2 ud.), router Cisco 2911 (1 ud.), access point Cisco Aironet (1 ud.), patch panel 24 puertos Cat6A, firewall Cisco ASA 5506-X, cableado UTP Cat6A + Cat5e para práctica, herramientas de certificación de cable (Fluke Networks DTX-1800), tester de cable, pelacables, ponchadora RJ45, etiquetadora, maleta de herramientas de red por par de puestos, software: Cisco IOS real (no simulador), Wireshark, SolarWinds Student Edition</td>
+          <td class="td-c">20</td><td class="td-c">2</td><td class="td-c">100</td><td class="td-c td-bold">200</td>
+          <td>Redes y Telecom. / Sistemas Informáticos</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr><td>3.1.2</td><td class="td-n">Laboratorio de Fibra Óptica y Telecomunicaciones</td>
+          <td>12 puestos de trabajo en bancadas (superficie resistente al calor), fusionadora de fibra óptica (Fujikura FSM-100P, 2 ud.), cortadora de fibra (2 ud.), OTDR portátil (EXFO FTB-7600 módulo, 2 ud.), VFL (Visual Fault Locator × 10), medidor de potencia óptica (× 10), cabezales de limpieza (kit IEC 61300-3-35), kit de conectores SC/LC/ST, pigtails monomodo y multimodo, bobinas de cable ADSS y Drop para práctica, racks de distribución óptica (ODF, 2 ud.), mesa de trabajo con iluminación focal, extractor de polvo óptico, microscopio de inspección de conectores (× 6)</td>
+          <td class="td-c">12</td><td class="td-c">1</td><td class="td-c">80</td><td class="td-c td-bold">80</td>
+          <td>Redes y Telecomunicaciones</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr><td>3.1.3</td><td class="td-n">Laboratorio de Sistemas Inalámbricos y IoT</td>
+          <td>15 puestos con Raspberry Pi 4 (4 GB) + Arduino Mega 2560 por puesto, módulos IoT (sensores temperatura, humedad, gas, presión, movimiento, cámara Pi), actuadores (relés, servomotores, pantallas LCD), kits de comunicación inalámbrica (WiFi, BT, LoRa, Zigbee, NFC), plataformas IoT (Node-RED, MQTT, Home Assistant, AWS IoT Core), osciloscopio digital de bolsillo (2 canales × 15 puestos), fuente de alimentación regulada por puesto (0–30 V / 0–5 A), multímetro digital, plotter de trayectorias para drones pequeños (DJI Tello × 5)</td>
+          <td class="td-c">15</td><td class="td-c">1</td><td class="td-c">70</td><td class="td-c td-bold">70</td>
+          <td>Redes y Telecom. / IA / Mecatrónica</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr class="sz-row"><td colspan="9">3.2 — LABORATORIO DE SOPORTE TÉCNICO Y HARDWARE</td></tr>
+        <tr><td>3.2.1</td><td class="td-n">Laboratorio de Ensamble y Diagnóstico de Hardware</td>
+          <td>20 bancadas de trabajo (1,60×0,80 m, superficie ESD), kit de herramientas completo por bancada (destornilladores Torx/Phillips/hexagonales, alicates, pelacables, extractor de IC, bisturí), pulseras antiestáticas + tapetes ESD + fundas de protección, fuente de alimentación ATX de banco por puesto, osciloscopio digital 2 canales (× 10), multímetro digital (× 20), kit de diagnóstico POST (POST card PCI + speaker de diagnóstico), componentes de práctica (placas madres, procesadores, memoria RAM, GPU, HDD/SSD) — rotación semestral, gabinetes de trabajo con ruedas, iluminación focal por bancada (lámpara articulada 6000K), armario de componentes clasificados (FIFO), area de depósito de equipos de préstamo a estudiantes</td>
+          <td class="td-c">20</td><td class="td-c">2</td><td class="td-c">85</td><td class="td-c td-bold">170</td>
+          <td>Soporte Técnico</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr><td>3.2.2</td><td class="td-n">Bodega de equipos y componentes de red/hardware</td>
+          <td>Armarios metálicos para equipos activos (switches, routers, AP) en stock de reemplazo, componentes de repuesto clasificados, herramientas de préstamo con sistema RFID, área de carga de dispositivos, registro digital de inventario</td>
+          <td class="td-c">—</td><td class="td-c">1</td><td class="td-c">35</td><td class="td-c td-bold">35</td>
+          <td>Redes y Telecom. / Soporte Técnico</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr class="st-row"><td colspan="6" class="td-bold">SUBTOTAL ZONA 3 — Área Neta</td><td class="td-c td-bold">555 m²</td><td colspan="2"></td></tr>
+        <tr class="st-row" style="background:#D0E8FF!important"><td colspan="6" class="td-bold">SUBTOTAL ZONA 3 — Área Bruta (+30%)</td><td class="td-c td-bold">722 m²</td><td colspan="2"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src"><strong>Fuente:</strong> Cisco Networking Academy — Lab Design Guide 2023 (netacad.com); CompTIA A+ Certification Exam Core 1 & 2 Objectives 2023 (comptia.org); Fujikura — FSM-100P splicing training guide; SENESCYT PRETT 2021 (laboratorios redes p. 52); Tec. Azuay 2024 (lab. redes y ciberseguridad activos).</p>
+</div>
+
+<!-- ══ ZONA 4: TALLERES ELECTROMECÁNICOS ══ -->
+<div class="section" id="z4">
+  <div class="sec-header">
+    <div class="sec-num">Z4</div>
+    <div><div class="sec-title">Zona de Talleres Electrónicos, Eléctricos y Mecatrónicos</div><div class="sec-sub">Práctica con equipos reales · 5,5 m²/estudiante · 15 est./taller</div></div>
+  </div>
+  <div class="justif">
+    <div class="justif-t">JUSTIFICACIÓN ZONA 4</div>
+    <p>Los talleres de electrónica, electricidad y mecatrónica son los más exigentes en términos de infraestructura física: requieren instalaciones eléctricas de alta tensión (220/380V), bancadas con tomas de tierra dedicadas, ventilación específica para soldadura, equipos de seguridad para alta tensión, y en el caso de mecatrónica, espacio para manipulación de robots industriales. La referencia de diseño proviene del SENA Colombia (centros de manufactura avanzada), el SENATI Perú (institutos técnicos con talleres eléctricos / mecatrónicos) y el estándar IEC 60204-1 (seguridad eléctrica en maquinaria industrial).
+    <br><strong>Fuente:</strong> SENA Colombia — Centro de Manufactura en Textiles y Cuero, Bogotá 2022 (sena.edu.co); SENATI Perú — reglamento de talleres eléctricos/mecánicos 2021 (senati.edu.pe); Neufert E. (2013) 16ª ed. p. 280–300; IEC 60204-1:2016 (seguridad eléctrica maquinaria); MINEDU Perú RVM N° 140-2021.</p>
+  </div>
+  <div class="prog-table-wrap">
+    <table class="prog-table">
+      <thead><tr><th>N°</th><th>Ambiente</th><th>Descripción y equipamiento</th><th class="td-c">Cap.</th><th class="td-c">Cant.</th><th class="td-c">m² neto c/u</th><th class="td-c">m² neto total</th><th>Carreras</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr class="zone-row"><td colspan="9">ZONA 4 — TALLERES ELECTRÓNICOS, ELÉCTRICOS Y MECATRÓNICOS</td></tr>
+        <tr class="sz-row"><td colspan="9">4.1 — TALLER DE ELECTRÓNICA Y CIRCUITOS</td></tr>
+        <tr><td>4.1.1</td><td class="td-n">Taller de Electrónica Analógica y Digital</td>
+          <td>15 bancadas de trabajo ESD (1,80×0,80 m), por puesto: osciloscopio digital 4 canales 200 MHz (Rigol DS1054Z), generador de funciones (Rigol DG1032Z), fuente de alimentación dual regulada (0–30 V / 0–5 A), multímetro de precisión (Fluke 115), estación de soldadura (Hakko FX-888D, temperatura controlada), desoldador (Hakko FR-301), lupa iluminada con LED (× 3), kit de componentes discretos (resistencias, condensadores, transistores, diodos, CIs: 74xx, LM741, LM555, etc.), placas de prototipos (protoboard), material para PCB (placas positivas, revelador, ácido). Extractor de humos de soldadura por bancada (doble brazo articulado). Armario de componentes con clasificación por valor. Analizador lógico USB (Saleae Logic 8, × 5).</td>
+          <td class="td-c">15</td><td class="td-c">2</td><td class="td-c">100</td><td class="td-c td-bold">200</td>
+          <td>Electrónica</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr><td>4.1.2</td><td class="td-n">Laboratorio de PCB y Fabricación de Circuitos</td>
+          <td>12 puestos de diseño (PC con Altium Designer / KiCad / Eagle), fresadora CNC para PCB (Bantam Tools Desktop PCB Milling Machine, 2 ud.), impresora de PCB UV (toner transfer), tanque de revelado + ácido para grabado (con ventilación forzada específica + cubeta de contención), taladro de banco de precisión (0,3–3 mm, × 4), equipo de reflow (horno SMD T-962A), estación de aire caliente (SMD rework, × 4), microscopio de inspección de soldadura SMD (× 3), armario de laminados (FR4 distintos espesores)</td>
+          <td class="td-c">12</td><td class="td-c">1</td><td class="td-c">70</td><td class="td-c td-bold">70</td>
+          <td>Electrónica / Mecatrónica</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr class="sz-row"><td colspan="9">4.2 — TALLER DE ELECTRICIDAD E INSTALACIONES</td></tr>
+        <tr><td>4.2.1</td><td class="td-n">Taller de Instalaciones Eléctricas Residenciales e Industriales</td>
+          <td>15 paneles de práctica de pared (tablero trifásico demostrativo: interruptores, diferenciales, contactores, relés térmicos, bornes), 220 V trifásico disponible en cada panel (con protección diferencial dedicada), herramientas de electricista por puesto (pelacables, ponchadora, tester de tensión, probador de fases, destornilladores aislados VDE 1000V), medidor de aislamiento (Megger MIT300, × 5), multímetro digital de seguridad Cat III 600 V (× 15), analizador de calidad de energía (Fluke 435-II, × 2), EPP completo por puesto (guantes dieléctricos Clase 0, gafas, casco), sistema de corte de emergencia general visible desde todos los puestos. Zona de instalaciones en fachada (pared de práctica exterior 6×3 m con tuberías EMT, conduit y escalerillas).</td>
+          <td class="td-c">15</td><td class="td-c">2</td><td class="td-c">100</td><td class="td-c td-bold">200</td>
+          <td>Electricidad</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr><td>4.2.2</td><td class="td-n">Patio de prácticas de energías renovables (exterior cubierto)</td>
+          <td>Zona exterior cubierta (estructura metálica + policarbonato, 100 m²): 12 paneles solares policristalinos (300 W c/u, 2 strings de 6 en serie), 3 controladores de carga MPPT, banco de baterías de litio LiFePO4 (20 kWh), 2 inversores solares (5 kW + 3 kW), equipo de monitoreo SolarEdge (producción en tiempo real), micro-aerogenerador demostrativo (200 W), sistema de micro-hidro demostrativo (bomba + turbina Pelton en circuito cerrado), banco de medición de parámetros eléctricos de cada fuente, zona de trabajo seguro con zapatas aislantes</td>
+          <td class="td-c">15</td><td class="td-c">1</td><td class="td-c">100</td><td class="td-c td-bold">100</td>
+          <td>Electricidad</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr class="sz-row"><td colspan="9">4.3 — TALLER DE MECATRÓNICA, ROBÓTICA Y AUTOMATIZACIÓN</td></tr>
+        <tr><td>4.3.1</td><td class="td-n">Taller de Mecatrónica y Robótica Educativa</td>
+          <td>12 bancadas de trabajo (1,80×0,90 m, superficie antiestática), kits de robótica modular por bancada (LEGO Mindstorms EV3 × 4 + Arduino Robot × 4 + Raspberry Pi + sensor kit completo), impresora 3D FDM de precisión (Bambu Lab X1 Carbon, × 3 — para fabricación de piezas de robot), brazo robótico educativo (DOBOT Magician Lite, × 6 — 4 DOF, pick & place), dron educativo programable (DJI Tello EDU × 6), kit de neumática básica (compresora + cilindros + válvulas distribuidoras + temporizadores), software: ROS 2 (Robot Operating System), Python, Matlab/Simulink Student (red), Gazebo (simulación robótica 3D), cámara de visión artificial (× 4, OpenCV)</td>
+          <td class="td-c">12</td><td class="td-c">2</td><td class="td-c">100</td><td class="td-c td-bold">200</td>
+          <td>Mecatrónica / Automatización Industrial</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr><td>4.3.2</td><td class="td-n">Celda de Automatización Industrial (PLC / SCADA)</td>
+          <td>Celda de producción flexible demostrativa: 1 brazo robótico industrial (Universal Robots UR10e, 10 kg payload, programación colaborativa), 3 PLCs Siemens S7-1500 + 2 PLCs Allen-Bradley CompactLogix, 2 paneles HMI (Siemens KTP700 Basic + Rockwell PanelView), sistema SCADA en servidor local (Siemens WinCC + Ignition SCADA), red PROFINET + EtherNet/IP de práctica, variador de frecuencia (ABB ACS580, × 3), sensores industriales (fotoeléctrico, inductivo, capacitivo, de presión, de temperatura — × 10 tipos), cintas transportadoras de práctica (×2), sistema neumático completo (compresor + distribución + actuadores), zona delimitada con cerco de seguridad + cortina de luz (pilz), controlador de seguridad, botón de paro de emergencia en todos los puntos de acceso, señalización de zona peligrosa</td>
+          <td class="td-c">12</td><td class="td-c">1</td><td class="td-c">120</td><td class="td-c td-bold">120</td>
+          <td>Automatización Industrial / Mecatrónica</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr class="sz-row"><td colspan="9">4.4 — SOPORTE Y SEGURIDAD DE TALLERES</td></tr>
+        <tr><td>4.4.1</td><td class="td-n">Bodega de materiales y equipos de taller</td>
+          <td>Armarios metálicos con llave por área, inventario digital RFID, depósito de materiales consumibles (componentes, cable, herramientas de corte), cargadores de equipos, área de limpieza y mantenimiento de herramientas</td>
+          <td class="td-c">—</td><td class="td-c">2</td><td class="td-c">30</td><td class="td-c td-bold">60</td><td>Todos los talleres</td><td></td></tr>
+        <tr><td>4.4.2</td><td class="td-n">SSHH talleres con vestuario técnico</td>
+          <td>Vestuario h/m con casilleros (40 ud. c/u), lavabos con jabón, zona de cambio de EPP (colgadores de overol y casco), SSHH discapacidad</td>
+          <td class="td-c">—</td><td class="td-c">2</td><td class="td-c">28</td><td class="td-c td-bold">56</td><td>Todos</td><td></td></tr>
+        <tr class="st-row"><td colspan="6" class="td-bold">SUBTOTAL ZONA 4 — Área Neta</td><td class="td-c td-bold">1.006 m²</td><td colspan="2"></td></tr>
+        <tr class="st-row" style="background:#D0E8FF!important"><td colspan="6" class="td-bold">SUBTOTAL ZONA 4 — Área Bruta (+30%)</td><td class="td-c td-bold">1.308 m²</td><td colspan="2"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src"><strong>Fuente:</strong> SENA Colombia — Centro Manufactura Bogotá 2022 (sena.edu.co); SENATI Perú — talleres eléctrico/mecatrónico 2021 (senati.edu.pe); Universal Robots — UR10e educational setup guide; Siemens — TIA Portal + SCADA WinCC educational installation; IEC 60204-1:2016; Neufert E. (2013) 16ª ed. p. 280–300; MINEDU Perú RVM N° 140-2021.</p>
+</div>
+
+<!-- ══ ZONA 5: INFRAESTRUCTURA DIGITAL EXTERIOR ══ -->
+<div class="section" id="z5">
+  <div class="sec-header">
+    <div class="sec-num">Z5</div>
+    <div><div class="sec-title">Zona de Infraestructura Digital Exterior y Prácticas de Campo</div><div class="sec-sub">Redes exteriores · Energía renovable · Patio de maniobras</div></div>
+  </div>
+  <div class="prog-table-wrap">
+    <table class="prog-table">
+      <thead><tr><th>N°</th><th>Ambiente</th><th>Descripción</th><th class="td-c">Cant.</th><th class="td-c">m²</th><th class="td-c">m² total</th><th>Carreras</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr class="zone-row"><td colspan="8">ZONA 5 — INFRAESTRUCTURA DIGITAL EXTERIOR</td></tr>
+        <tr><td>5.1</td><td class="td-n">Patio de maniobras eléctricas y tendido de redes</td>
+          <td>Zona exterior 600 m² (piso de hormigón + área de tierra + área de grava): postes de práctica de tendido de cable (4 postes de 6 m c/u para instalación de redes aéreas), zanjas de práctica de canalización de cables (2 trincheras de 10 m), área de trabajo seguro con señalización, alumbrado de práctica (instalación demostrativa en postes), caja de empalme y distribución eléctrica de práctica exterior</td>
+          <td class="td-c">1</td><td class="td-c">600</td><td class="td-c td-bold">600</td>
+          <td>Redes y Telecom. / Electricidad / Soporte</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr><td>5.2</td><td class="td-n">Torre de telecomunicaciones demostrativa</td>
+          <td>Torre autosoportada de 18 m (estructura triangular galvanizada), antenas: parabólica microonda (60 cm), panel sectorial 120° × 3, antena omnidireccional, enlace de microondas demostrativo (Ubiquiti AirFiber 5 GHz), sistema de pararrayos, aterrizaje técnico, acceso controlado (cerramiento + escalera de seguridad con línea de vida). Consola de monitoreo de la torre en laboratorio de redes.</td>
+          <td class="td-c">1</td><td class="td-c">25</td><td class="td-c td-bold">25</td>
+          <td>Redes y Telecomunicaciones</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr><td>5.3</td><td class="td-n">Pista de prueba de robótica y drones (exterior)</td>
+          <td>Zona pavimentada de 400 m² con marcado de cuadrículas (para práctica de navegación autónoma), área de vuelo de drones delimitada con malla (20×20 m), zona de prueba de robots de piso (laberinto configurables con módulos de panel), cronómetro digital visible, cámaras de seguimiento de trayectoria (4 ud.), puntos de alimentación eléctrica para carga de baterías de drones</td>
+          <td class="td-c">1</td><td class="td-c">420</td><td class="td-c td-bold">420</td>
+          <td>Mecatrónica / IA / Automatización</td><td><span class="badge b-fac">COMPARTIDA FAC.</span></td></tr>
+        <tr><td>5.4</td><td class="td-n">Bodega exterior de equipos de campo</td>
+          <td>Caseta prefabricada 20 m² con armario de equipos pesados (generador portátil, compresor, escaleras), cargadores de baterías de drones y equipos de campo, EPP de campo (cascos, cinturones de seguridad)</td>
+          <td class="td-c">1</td><td class="td-c">20</td><td class="td-c td-bold">20</td>
+          <td>Todas las carreras de campo</td><td></td></tr>
+        <tr class="st-row"><td colspan="5" class="td-bold">SUBTOTAL ZONA 5 — Áreas Exteriores</td><td class="td-c td-bold">1.065 m²</td><td colspan="2"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src"><strong>Fuente:</strong> Ubiquiti Networks — AirFiber installation guide; FAA / Reg. ARCSA Ecuador — normativa de vuelo de drones para formación (arc.gob.ec); SENA Colombia — pistas de práctica de robótica (sena.edu.co); Neufert E. (2013) 16ª ed. p. 295–310.</p>
+</div>
+
+<!-- ══ ZONA 6: ADMINISTRATIVA ══ -->
+<div class="section" id="z6">
+  <div class="sec-header">
+    <div class="sec-num">Z6</div>
+    <div><div class="sec-title">Zona Administrativa y Docente</div><div class="sec-sub">Gestión institucional · 8–12 m²/puesto</div></div>
+  </div>
+  <div class="prog-table-wrap">
+    <table class="prog-table">
+      <thead><tr><th>N°</th><th>Ambiente</th><th>Descripción</th><th class="td-c">Cant.</th><th class="td-c">m² neto c/u</th><th class="td-c">m² neto total</th><th>Obs.</th></tr></thead>
+      <tbody>
+        <tr class="zone-row"><td colspan="7">ZONA 6 — ADMINISTRATIVA Y DOCENTE</td></tr>
+        <tr><td>6.1</td><td class="td-n">Dirección / Decanato</td><td>Escritorio, sala reunión interna 6 personas, armario archivo, computador, acceso controlado</td><td class="td-c">1</td><td class="td-c">28</td><td class="td-c td-bold">28</td><td>Dirección de la Facultad</td></tr>
+        <tr><td>6.2</td><td class="td-n">Secretaría Académica</td><td>2 puestos atención, mostrador, sala espera 10 personas, archivo, fotocopiadora, impresora, punto información</td><td class="td-c">1</td><td class="td-c">40</td><td class="td-c td-bold">40</td><td>Atención estudiantes y docentes</td></tr>
+        <tr><td>6.3</td><td class="td-n">Sala de reuniones de facultad</td><td>Mesa 14 personas, proyector 4K, pantalla, videoconferencia, pizarrón, WiFi, armario</td><td class="td-c">1</td><td class="td-c">35</td><td class="td-c td-bold">35</td><td>Reuniones de coordinación</td></tr>
+        <tr><td>6.4</td><td class="td-n">Coordinaciones de carrera</td><td>Escritorio, computador, archivero, 2 sillas visita, pantalla de revisión de proyectos técnicos</td><td class="td-c">9</td><td class="td-c">12</td><td class="td-c td-bold">108</td><td>Una por carrera</td></tr>
+        <tr><td>6.5</td><td class="td-n">Sala de docentes</td><td>25 puestos de trabajo (computadores), cocineta, 90 casilleros, tablón de anuncios, descanso, impresora de red, nevera</td><td class="td-c">1</td><td class="td-c">100</td><td class="td-c td-bold">100</td><td>Docentes tiempo completo y parcial</td></tr>
+        <tr><td>6.6</td><td class="td-n">Cubículos docentes tiempo completo</td><td>Módulos 1,5×1,5 m semi-abiertos, computador, doble pantalla (revisión de código), librero</td><td class="td-c">27</td><td class="td-c">4</td><td class="td-c td-bold">108</td><td>Docentes tiempo completo (1/9 carreras)</td></tr>
+        <tr><td>6.7</td><td class="td-n">Salas de tutoría técnica</td><td>Mesa 4 personas, pizarrón, computador + pantalla grande para revisión de código/circuitos, equipos de medición de consulta</td><td class="td-c">9</td><td class="td-c">16</td><td class="td-c td-bold">144</td><td>Una por carrera — revisión de proyectos técnicos</td></tr>
+        <tr><td>6.8</td><td class="td-n">Archivo / bodega documentos</td><td>Estanterías metálicas, clasificación año/carrera, deshumidificador</td><td class="td-c">1</td><td class="td-c">20</td><td class="td-c td-bold">20</td><td>Uso administrativo</td></tr>
+        <tr><td>6.9</td><td class="td-n">SSHH zona administrativa</td><td>SSHH h+m independientes, SSHH discapacidad</td><td class="td-c">2</td><td class="td-c">16</td><td class="td-c td-bold">32</td><td>Docentes y administrativos</td></tr>
+        <tr class="st-row"><td colspan="5" class="td-bold">SUBTOTAL ZONA 6 — Área Neta</td><td class="td-c td-bold">615 m²</td><td></td></tr>
+        <tr class="st-row" style="background:#D0E8FF!important"><td colspan="5" class="td-bold">SUBTOTAL ZONA 6 — Área Bruta (+25%)</td><td class="td-c td-bold">769 m²</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src"><strong>Fuente:</strong> CES Ecuador — Reglamento Régimen Académico 2022 Art. 18 (relación docente-estudiante 1:25); Neufert E. (2013) 16ª ed. p. 210–220; MINEDU Perú RVM N° 140-2021; ISTA Riobamba (istriobamba.edu.ec).</p>
+</div>
+
+<!-- ══ ZONA 7: INVESTIGACIÓN ══ -->
+<div class="section" id="z7">
+  <div class="sec-header">
+    <div class="sec-num">Z7</div>
+    <div><div class="sec-title">Zona de Investigación Aplicada y Vinculación</div><div class="sec-sub">Centro de innovación TI · Parque tecnológico · LOES Art. 107</div></div>
+  </div>
+  <div class="prog-table-wrap">
+    <table class="prog-table">
+      <thead><tr><th>N°</th><th>Ambiente</th><th>Descripción</th><th class="td-c">Cant.</th><th class="td-c">m² neto</th><th class="td-c">m² total</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr class="zone-row"><td colspan="7">ZONA 7 — INVESTIGACIÓN APLICADA Y VINCULACIÓN</td></tr>
+        <tr><td>7.1</td><td class="td-n">Centro de Innovación Tecnológica (CIT)</td>
+          <td>20 puestos de trabajo en coworking tecnológico, computadores de alto rendimiento en préstamo para proyectos de investigación, 4 áreas de proyecto aisladas (mamparas acústicas), zona de sprint y diseño de producto (pizarrones + post-its + prototipos), impresora 3D profesional (Bambu Lab X1E), cortadora láser (Glowforge Pro), espacio de fabricación rápida (FabLab básico), acceso 24/7 con carné de proyecto registrado</td>
+          <td class="td-c">1</td><td class="td-c">80</td><td class="td-c td-bold">80</td><td><span class="badge b-share">COMPARTIDA CAMPUS</span></td></tr>
+        <tr><td>7.2</td><td class="td-n">Laboratorio de Proyectos de Grado e Innovación</td>
+          <td>10 puestos equipados para estudiantes de último semestre con proyectos integradores, acceso a equipos especializados de la facultad fuera de horario académico, sistema de tutoría virtual (Teams/Zoom permanente con docentes tutores), repositorio de proyectos anteriores con acceso controlado, área de montaje y prueba de prototipos</td>
+          <td class="td-c">1</td><td class="td-c">60</td><td class="td-c td-bold">60</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr><td>7.3</td><td class="td-n">Sala de vinculación empresarial</td>
+          <td>40 personas, proyector, pantalla, sillas modulares, acceso desde exterior, videoconferencia HD para presentación remota de proyectos a empresas</td>
+          <td class="td-c">1</td><td class="td-c">50</td><td class="td-c td-bold">50</td><td><span class="badge b-share">COMPARTIDA CAMPUS</span></td></tr>
+        <tr><td>7.4</td><td class="td-n">Área de certificaciones internacionales</td>
+          <td>Sala de exámenes certificados: 20 puestos con PC (sistema de vigilancia de exámenes: cámara + bloqueador de internet externo durante evaluación), software de certificación: Cisco Pearson VUE, CompTIA, Linux Foundation, AWS, Azure — modalidad presencial, cronómetro digital, vigilante de sala, sistema de identificación biométrica</td>
+          <td class="td-c">1</td><td class="td-c">45</td><td class="td-c td-bold">45</td><td><span class="badge b-navy">ESPECÍFICA</span></td></tr>
+        <tr class="st-row"><td colspan="5" class="td-bold">SUBTOTAL ZONA 7 — Área Neta</td><td class="td-c td-bold">235 m²</td><td></td></tr>
+        <tr class="st-row" style="background:#D0E8FF!important"><td colspan="5" class="td-bold">SUBTOTAL ZONA 7 — Área Bruta (+25%)</td><td class="td-c td-bold">294 m²</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src"><strong>Fuente:</strong> OIT/Cinterfor 2017; LOES 2022 Art. 107 (vinculación); Cisco Pearson VUE — testing center requirements 2023; CompTIA — Authorized Testing Center guidelines 2023; Linux Foundation — certification center setup.</p>
+</div>
+
+<!-- ══ ZONA 8: SERVICIOS ══ -->
+<div class="section" id="z8">
+  <div class="sec-header">
+    <div class="sec-num">Z8</div>
+    <div><div class="sec-title">Zona de Servicios Estudiantiles</div><div class="sec-sub">Biblioteca TI · Descanso · Sanitarios · 38% cuota campus</div></div>
+  </div>
+  <div class="prog-table-wrap">
+    <table class="prog-table">
+      <thead><tr><th>N°</th><th>Ambiente</th><th>Descripción</th><th class="td-c">Cant.</th><th class="td-c">m² neto</th><th class="td-c">m² total</th><th>Tipo</th></tr></thead>
+      <tbody>
+        <tr class="zone-row"><td colspan="7">ZONA 8 — SERVICIOS ESTUDIANTILES</td></tr>
+        <tr><td>8.1</td><td class="td-n">Biblioteca especializada en TI e Ingeniería</td>
+          <td>3.000 volúmenes (TI, electricidad, mecatrónica, electrónica, redes), 25 puestos lectura, 6 mesas grupales, 10 computadores de consulta (acceso a O'Reilly Learning, Safari Books, IEEE Xplore, ACM Digital Library), colección de revistas IEEE Spectrum y Electronics World (5 años), zona de lectura informal con sillones, control de acceso con carné, repositorio digital de trabajos de titulación de la facultad</td>
+          <td class="td-c">1</td><td class="td-c">140</td><td class="td-c td-bold">140</td><td><span class="badge b-navy">ESPECÍFICA FAC.</span></td></tr>
+        <tr><td>8.2</td><td class="td-n">Sala de cómputo de acceso libre 24/7</td>
+          <td>25 computadores de alto rendimiento (Ryzen 7, 16 GB RAM, SSD), sistema de gestión de turnos (1h), impresión de bajo costo, escáner, WiFi 10 Gbps, acceso con carné estudiantil las 24 horas (control biométrico), cámara de seguridad, ventilación 24/7</td>
+          <td class="td-c">1</td><td class="td-c">65</td><td class="td-c td-bold">65</td><td><span class="badge b-navy">ESPECÍFICA FAC.</span></td></tr>
+        <tr><td>8.3</td><td class="td-n">Comedor / cafetería (cuota 38% campus)</td>
+          <td>Cuota proporcional del comedor central del campus para 2.700 estudiantes (~152 puestos simultáneos de 400 totales)</td>
+          <td class="td-c">—</td><td class="td-c">—</td><td class="td-c td-bold">304</td><td><span class="badge b-share">COMPARTIDA CAMPUS</span></td></tr>
+        <tr><td>8.4</td><td class="td-n">Zona de descanso y esparcimiento técnico</td>
+          <td>Área exterior ajardinada 250 m², zona de juego (futbolín + ping-pong), bancas con WiFi exterior + tomas de carga USB, zona de lectura informal, tablero digital de proyectos QR, exposición permanente de prototipos estudiantiles en vitrina exterior</td>
+          <td class="td-c">1</td><td class="td-c">250</td><td class="td-c td-bold">250</td><td><span class="badge b-navy">ESPECÍFICA FAC.</span></td></tr>
+        <tr><td>8.5</td><td class="td-n">Bienestar estudiantil (cuota 38% campus)</td>
+          <td>Cuota proporcional del centro de bienestar: psicología, médico, bolsa de empleo y bolsa de prácticas en empresas TI</td>
+          <td class="td-c">—</td><td class="td-c">—</td><td class="td-c td-bold">38</td><td><span class="badge b-share">COMPARTIDA CAMPUS</span></td></tr>
+        <tr><td>8.6</td><td class="td-n">Lockers estudiantiles</td>
+          <td>120 lockers metálicos, llave o combo digital, zona exterior cubierta</td>
+          <td class="td-c">3</td><td class="td-c">12</td><td class="td-c td-bold">36</td><td><span class="badge b-navy">ESPECÍFICA FAC.</span></td></tr>
+        <tr><td>8.7</td><td class="td-n">SSHH estudiantes mujeres (por bloque)</td>
+          <td>5 inodoros + 5 lavabos + cambiador bebé, espejo, dispensadores, extractor</td>
+          <td class="td-c">5</td><td class="td-c">22</td><td class="td-c td-bold">110</td><td></td></tr>
+        <tr><td>8.8</td><td class="td-n">SSHH estudiantes hombres (por bloque)</td>
+          <td>4 inodoros + 3 urinarios + 5 lavabos, espejo, dispensadores, ventilación</td>
+          <td class="td-c">5</td><td class="td-c">20</td><td class="td-c td-bold">100</td><td></td></tr>
+        <tr><td>8.9</td><td class="td-n">SSHH accesibilidad universal</td>
+          <td>Inodoro con barras, lavabo accesible, espejo inclinado, timbre emergencia, maniobra ø 1,50 m (LOES Art. 356)</td>
+          <td class="td-c">6</td><td class="td-c">5</td><td class="td-c td-bold">30</td><td>LOES Art. 356</td></tr>
+        <tr class="st-row"><td colspan="5" class="td-bold">SUBTOTAL ZONA 8 — Área Neta</td><td class="td-c td-bold">1.073 m²</td><td></td></tr>
+        <tr class="st-row" style="background:#D0E8FF!important"><td colspan="5" class="td-bold">SUBTOTAL ZONA 8 — Área Bruta (+20%)</td><td class="td-c td-bold">1.288 m²</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="src"><strong>Fuente:</strong> MINEDU Perú RVM N° 140-2021 (1 inodoro/30 est.); LOES 2022 Art. 356 (accesibilidad universal obligatoria); Neufert E. (2013) 16ª ed. p. 295–310; MinEduc Ecuador UEM BID-2017; O'Reilly Learning institutional guide (oreilly.com).</p>
+</div>
+
+<!-- ══ ORGANIGRAMA GENERAL ══ -->
+<div class="section" id="organo">
+  <div class="sec-header">
+    <div class="sec-num">09</div>
+    <div><div class="sec-title">Organigrama Funcional General</div><div class="sec-sub">Relaciones espaciales y jerarquías — Facultad de Ingeniería, Tecnología e Informática</div></div>
+  </div>
+  <div class="organo-wrap">
+    <div class="org-title">Organigrama funcional integral — Facultad de Ingeniería, Tecnología e Informática</div>
+    <div class="org-tree">
+      <div class="org-flex-row" style="flex-direction:column;align-items:center">
+        <div class="org-box service-box" style="min-width:240px;font-size:10px">🚶 ACCESO PRINCIPAL AL CAMPUS<br><small style="font-weight:400">Hall de bienvenida · Galería prototipos · Control de ingreso</small></div>
+        <div class="org-line-down"></div>
+        <div class="org-box root" style="min-width:320px">💻 FACULTAD DE INGENIERÍA, TECNOLOGÍA E INFORMÁTICA<br><small style="font-weight:400;font-size:8px">Decanato · Secretaría Académica · 9 Coordinaciones de Carrera</small></div>
+        <div class="org-line-down"></div>
+        <div class="org-flex-row" style="gap:8px">
+          <div class="org-flex-item"><div class="org-vline"></div>
+            <div class="org-box l1" style="min-width:120px">Z1 ACADÉMICA<br><small>3.247 m²</small></div>
+            <div class="org-vline"></div>
+            <div class="org-flex-row" style="gap:4px;margin:0">
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">14 Aulas<br>Tipo A</div></div>
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">7 Aulas TIC<br>Prog+Redes</div></div>
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">2 Hackathon<br>+ Demos</div></div>
+            </div>
+          </div>
+          <div class="org-flex-item"><div class="org-vline"></div>
+            <div class="org-box l1" style="min-width:120px">Z2 LABS SW/IA<br><small>1.132 m²</small></div>
+            <div class="org-vline"></div>
+            <div class="org-flex-row" style="gap:4px;margin:0">
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">3 Labs<br>Software</div></div>
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">2 Labs IA<br>HPC/ML</div></div>
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box tech-box" style="min-width:65px;font-size:8px">Ciberseg.<br>+ SOC</div></div>
+            </div>
+          </div>
+          <div class="org-flex-item"><div class="org-vline"></div>
+            <div class="org-box l1" style="min-width:120px">Z3 REDES/HW<br><small>722 m²</small></div>
+            <div class="org-vline"></div>
+            <div class="org-flex-row" style="gap:4px;margin:0">
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">2 Labs<br>Redes+Fibra</div></div>
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">Lab IoT<br>+ 2 Labs HW</div></div>
+            </div>
+          </div>
+          <div class="org-flex-item"><div class="org-vline"></div>
+            <div class="org-box l1" style="min-width:120px">Z4 TALLERES<br><small>1.308 m²</small></div>
+            <div class="org-vline"></div>
+            <div class="org-flex-row" style="gap:4px;margin:0">
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">2 Talleres<br>Electrónica</div></div>
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">2 Talleres<br>Electricidad</div></div>
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">2 Talleres<br>Mecatrónica</div></div>
+            </div>
+          </div>
+          <div class="org-flex-item"><div class="org-vline"></div>
+            <div class="org-box l1" style="min-width:120px">Z5 EXTERIOR<br><small>1.065 m²</small></div>
+            <div class="org-vline"></div>
+            <div class="org-flex-row" style="gap:4px;margin:0">
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">Patio<br>Eléctrico</div></div>
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">Torre Telecom<br>+ Pista Robot</div></div>
+            </div>
+          </div>
+          <div class="org-flex-item"><div class="org-vline"></div>
+            <div class="org-box l1" style="min-width:120px">Z6+Z7+Z8<br><small>Admin+I+D+Svc</small></div>
+            <div class="org-vline"></div>
+            <div class="org-flex-row" style="gap:4px;margin:0">
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box l3" style="min-width:65px;font-size:8px">Decanato<br>9 Coord.</div></div>
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box research-box" style="min-width:65px;font-size:8px">CIT<br>Cert. TI</div></div>
+              <div class="org-flex-item"><div class="org-vline"></div><div class="org-box service-box" style="min-width:65px;font-size:8px">Bib.TI<br>SSHH</div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Compartidos campus -->
+        <div style="margin-top:20px;border-top:2px dashed var(--gold);padding-top:16px;width:100%">
+          <div style="font-size:9px;font-weight:700;color:var(--gold);letter-spacing:2px;text-align:center;margin-bottom:12px">── ÁREAS COMPARTIDAS CON LAS 3 FACULTADES DEL CAMPUS (38% esta facultad) ──</div>
+          <div class="org-flex-row" style="gap:10px">
+            <div class="org-flex-item"><div class="org-box shared-box" style="min-width:110px;font-size:9px;padding:8px 10px">🍽️ Comedor Central<br>(400 puestos)</div></div>
+            <div class="org-flex-item"><div class="org-box shared-box" style="min-width:110px;font-size:9px;padding:8px 10px">📚 Biblioteca General</div></div>
+            <div class="org-flex-item"><div class="org-box shared-box" style="min-width:110px;font-size:9px;padding:8px 10px">🎭 Auditorio 300 asientos</div></div>
+            <div class="org-flex-item"><div class="org-box shared-box" style="min-width:110px;font-size:9px;padding:8px 10px">⚽ Deportes</div></div>
+            <div class="org-flex-item"><div class="org-box shared-box" style="min-width:110px;font-size:9px;padding:8px 10px">🏥 Bienestar</div></div>
+            <div class="org-flex-item"><div class="org-box shared-box" style="min-width:110px;font-size:9px;padding:8px 10px">🖨️ Servidores<br>Campus</div></div>
+            <div class="org-flex-item"><div class="org-box shared-box" style="min-width:110px;font-size:9px;padding:8px 10px">🤝 Sala Vinculación<br>Empresarial</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="leyenda" style="margin-top:16px">
+      <div class="ley-item"><div class="ley-dot" style="background:var(--fac)"></div><span>Nodo raíz / facultad</span></div>
+      <div class="ley-item"><div class="ley-dot" style="background:var(--fac2)"></div><span>Zona principal</span></div>
+      <div class="ley-item"><div class="ley-dot" style="background:var(--light);border:1px solid var(--fac3)"></div><span>Ambiente específico</span></div>
+      <div class="ley-item"><div class="ley-dot" style="background:#0A3D6B"></div><span>Ciberseguridad / zona restringida</span></div>
+      <div class="ley-item"><div class="ley-dot" style="background:var(--navy2)"></div><span>Investigación / certificaciones</span></div>
+      <div class="ley-item"><div class="ley-dot" style="background:var(--steel)"></div><span>Servicios / soporte</span></div>
+      <div class="ley-item"><div class="ley-dot" style="background:var(--gold)"></div><span>Compartida 3 facultades</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ RESUMEN ══ -->
+<div class="section" id="resumen">
+  <div class="sec-header">
+    <div class="sec-num">10</div>
+    <div><div class="sec-title">Resumen del Programa Arquitectónico</div><div class="sec-sub">Cuadro consolidado de áreas — Facultad de Ingeniería, Tecnología e Informática</div></div>
+  </div>
+
+  <div class="g4">
+    <div class="kpi-prog"><div class="kpi-v">12.800</div><div class="kpi-l">m² totales (construido + ext. esp.)</div><div class="kpi-s">Incluyendo infraestructura exterior tecnológica</div></div>
+    <div class="kpi-prog"><div class="kpi-v">9,7 m²</div><div class="kpi-l">m² construidos / estudiante</div><div class="kpi-s">Sobre 2.700 estudiantes activos</div></div>
+    <div class="kpi-prog"><div class="kpi-v">1.065</div><div class="kpi-l">m² infraestructura exterior especializada</div><div class="kpi-s">Patio eléctrico + torre + pista robótica</div></div>
+    <div class="kpi-prog"><div class="kpi-v">13.865</div><div class="kpi-l">m² huella total facultad</div><div class="kpi-s">Construido + exteriores + circulaciones</div></div>
+  </div>
+
+  <div class="prog-table-wrap">
+    <table class="prog-table">
+      <thead><tr><th>Zona</th><th>Descripción</th><th class="td-c">m² neto</th><th class="td-c">Factor</th><th class="td-c">m² bruto</th><th class="td-c">% total</th><th>Norma / Fuente</th></tr></thead>
+      <tbody>
+        <tr><td class="td-n">Z1</td><td>Zona Académica — Aulas A, B, TIC Prog., TIC Redes, Hackathon, Demos</td><td class="td-c">2.498</td><td class="td-c">+30%</td><td class="td-c td-bold">3.247</td><td class="td-c">25,4%</td><td>MINEDU Perú 2021 (1,8 m²/est.) · CES 2022</td></tr>
+        <tr><td class="td-n">Z2</td><td>Labs Software, IA/ML, Ciberseguridad, BD, Cloud, SOC</td><td class="td-c">871</td><td class="td-c">+30%</td><td class="td-c td-bold">1.132</td><td class="td-c">8,9%</td><td>Neufert 2013 · MIT CSAIL · Cisco NetAcad</td></tr>
+        <tr><td class="td-n">Z3</td><td>Labs Redes, Fibra Óptica, IoT, Soporte Técnico, Hardware</td><td class="td-c">555</td><td class="td-c">+30%</td><td class="td-c td-bold">722</td><td class="td-c">5,7%</td><td>Cisco Lab Design Guide 2023 · CompTIA A+</td></tr>
+        <tr><td class="td-n">Z4</td><td>Talleres Electrónica, PCB, Electricidad, Renovables, Mecatrónica, Celda Robot.</td><td class="td-c">1.006</td><td class="td-c">+30%</td><td class="td-c td-bold">1.308</td><td class="td-c">10,2%</td><td>Neufert 2013 (5,5 m²/est.) · SENA · SENATI · IEC 60204</td></tr>
+        <tr><td class="td-n">Z5</td><td>Infraestructura exterior — patio eléctrico, torre, pista robótica</td><td class="td-c">1.065</td><td class="td-c">—</td><td class="td-c td-bold">1.065</td><td class="td-c">8,3%</td><td>FAA/ARCSA Ecuador · SENA Colombia · Neufert 2013</td></tr>
+        <tr><td class="td-n">Z6</td><td>Zona Administrativa y Docente</td><td class="td-c">615</td><td class="td-c">+25%</td><td class="td-c td-bold">769</td><td class="td-c">6,0%</td><td>CES 2022 Art. 18 · Neufert 2013 (8–12 m²/puesto)</td></tr>
+        <tr><td class="td-n">Z7</td><td>Investigación — CIT, Proyectos de Grado, Vinculación, Certificaciones</td><td class="td-c">235</td><td class="td-c">+25%</td><td class="td-c td-bold">294</td><td class="td-c">2,3%</td><td>OIT/Cinterfor 2017 · LOES 2022 Art. 107 · Cisco VUE</td></tr>
+        <tr><td class="td-n">Z8</td><td>Servicios — Biblioteca TI, cómputo libre 24/7, descanso, SSHH, cuotas campus</td><td class="td-c">1.073</td><td class="td-c">+20%</td><td class="td-c td-bold">1.288</td><td class="td-c">10,1%</td><td>MINEDU Perú 2021 · LOES Art. 356 · Neufert 2013</td></tr>
+        <tr><td class="td-n">Z9</td><td>Circulación general + estructura + muros internos</td><td class="td-c">—</td><td class="td-c">—</td><td class="td-c td-bold">1.870</td><td class="td-c">14,6%</td><td>15–18% del total construido</td></tr>
+        <tr><td class="td-n">Z10</td><td>Plazas, accesos exteriores, jardinería, estacionamiento bicicletas</td><td class="td-c">—</td><td class="td-c">—</td><td class="td-c td-bold">1.105</td><td class="td-c">8,6%</td><td>PUGS Cuenca 2019 · 5 m²/est. exteriores generales</td></tr>
+        <tr class="tot-row"><td class="td-bold" colspan="2">TOTAL FACULTAD — ÁREA BRUTA CONSTRUIDA (Z1→Z4 + Z6→Z9)</td><td class="td-c">—</td><td class="td-c">—</td><td class="td-c td-bold">11.735 m²</td><td class="td-c">—</td><td>—</td></tr>
+        <tr style="background:var(--fac3)!important;color:#fff;font-weight:700"><td class="td-bold" colspan="2">TOTAL FACULTAD — HUELLA TOTAL (incluye Z5 exterior + Z10)</td><td class="td-c">—</td><td class="td-c">—</td><td class="td-c td-bold">12.800 m²</td><td class="td-c">100%</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="g3" style="margin-top:18px">
+    <div class="card">
+      <div class="card-title">Distribución por tipo de espacio</div>
+      <table class="prog-table">
+        <thead><tr><th>Tipo</th><th class="td-c">m² bruto</th><th class="td-c">%</th></tr></thead>
+        <tbody>
+          <tr><td>Académico (aulas + TIC)</td><td class="td-c">3.247</td><td class="td-c">25,4%</td></tr>
+          <tr><td>Práctica (labs + talleres)</td><td class="td-c">3.162</td><td class="td-c">24,7%</td></tr>
+          <tr><td>Infraestr. exterior tecnológica</td><td class="td-c">1.065</td><td class="td-c">8,3%</td></tr>
+          <tr><td>Admin. + Investigación</td><td class="td-c">1.063</td><td class="td-c">8,3%</td></tr>
+          <tr><td>Servicios estudiantiles</td><td class="td-c">1.288</td><td class="td-c">10,1%</td></tr>
+          <tr><td>Circulación + exteriores generales</td><td class="td-c">2.975</td><td class="td-c">23,2%</td></tr>
+          <tr class="tot-row"><td><strong>TOTAL</strong></td><td class="td-c"><strong>12.800</strong></td><td class="td-c"><strong>100%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Espacios compartidos vs. específicos</div>
+      <table class="prog-table">
+        <thead><tr><th>Categoría</th><th class="td-c">m²</th><th class="td-c">%</th></tr></thead>
+        <tbody>
+          <tr><td>Específicos de la facultad</td><td class="td-c">9.400</td><td class="td-c">73,4%</td></tr>
+          <tr><td>Compartidos entre 9 carreras</td><td class="td-c">2.560</td><td class="td-c">20,0%</td></tr>
+          <tr><td>Compartidos con 3 facultades</td><td class="td-c">840</td><td class="td-c">6,6%</td></tr>
+          <tr class="tot-row"><td><strong>TOTAL</strong></td><td class="td-c"><strong>12.800</strong></td><td class="td-c"><strong>100%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <div class="card-title">Validación de indicadores</div>
+      <table class="prog-table">
+        <thead><tr><th>Indicador</th><th class="td-c">Proyecto</th><th class="td-c">Referencia</th></tr></thead>
+        <tbody>
+          <tr><td>m² construidos / estudiante</td><td class="td-c">9,7 m²</td><td class="td-c">9–14 m²</td></tr>
+          <tr><td>m² laboratorio / estudiante</td><td class="td-c">1,17 m²</td><td class="td-c">0,8–1,5 m²</td></tr>
+          <tr><td>m² aula / est. simultáneo</td><td class="td-c">2,40 m²</td><td class="td-c">1,8–2,5 m²</td></tr>
+          <tr><td>m² taller / estudiante</td><td class="td-c">0,48 m²</td><td class="td-c">0,4–0,8 m²</td></tr>
+          <tr><td>m² adm. / estudiante</td><td class="td-c">0,28 m²</td><td class="td-c">0,3–0,8 m²</td></tr>
+          <tr><td>SSHH (1 inod./X est.)</td><td class="td-c">1/20 est.</td><td class="td-c">1/30 mín.</td></tr>
+        </tbody>
+      </table>
+      <p class="src" style="margin-top:8px"><strong>Refs:</strong> MINEDU Perú 2021 · Neufert 2013 · Cisco NetAcad 2023 · MIT CSAIL · FEUP Porto 2024</p>
+    </div>
+  </div>
+
+  <div class="summary-box">
+    <div class="summary-title">SÍNTESIS EJECUTIVA — PROGRAMA ARQUITECTÓNICO FACULTAD 3</div>
+    <div class="summary-grid">
+      <div class="sg-item"><div class="sg-v">9</div><div class="sg-l">Carreras tecnológicas de 5 semestres</div></div>
+      <div class="sg-item"><div class="sg-v">2.700</div><div class="sg-l">Estudiantes activos en fase madura</div></div>
+      <div class="sg-item"><div class="sg-v">11.735 m²</div><div class="sg-l">Área bruta construida (sin ext. esp.)</div></div>
+      <div class="sg-item"><div class="sg-v">1.065 m²</div><div class="sg-l">Infraestructura exterior tecnológica</div></div>
+      <div class="sg-item"><div class="sg-v">9,7 m²/est.</div><div class="sg-l">Índice · Entre FEUP y norma LATAM</div></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /cnt -->
+
+<div class="ftr">
+  <div class="ftr-grid">
+    <div>• MINEDU Perú. (2021). RVM N° 140-2021 — Criterios de Diseño Institutos Educ. Sup. Tecnológica. gob.pe/minedu</div>
+    <div>• MinEduc Ecuador / BID. (2017). Normas Técnicas UEM. educacion.gob.ec</div>
+    <div>• SENESCYT. (2021). Proyecto PRETT. educacionsuperior.gob.ec</div>
+    <div>• SENESCYT. (2023). Acuerdo 2023-0033-AC (Carreras Interés Público). educacionsuperior.gob.ec</div>
+    <div>• Neufert E. (2013). Arte de proyectar en arquitectura, 16ª ed. Gustavo Gili.</div>
+    <div>• CES Ecuador. (2022). Reglamento de Régimen Académico. ces.gob.ec</div>
+    <div>• OIT/Cinterfor. (2017). El futuro de la FP en ALC. ISBN: 978-92-9088-274-9.</div>
+    <div>• WEF. (2025). Future of Jobs 2025. weforum.org</div>
+    <div>• MIT CSAIL. (2024). Computer Science and AI Lab. csail.mit.edu</div>
+    <div>• Cisco Networking Academy. (2023). Academy Lab Design Guide. netacad.com</div>
+    <div>• SENA Colombia. (2022). Centro Manufactura — infraestructura talleres. sena.edu.co</div>
+    <div>• SENATI Perú. (2021). Reglamento talleres eléctricos/mecánicos. senati.edu.pe</div>
+    <div>• CompTIA. (2023). A+ Certification Exam Objectives. comptia.org</div>
+    <div>• Universal Robots. (2024). UR10e educational setup guide. universal-robots.com</div>
+    <div>• Siemens. (2023). TIA Portal + WinCC educational installation guide. siemens.com</div>
+    <div>• IEC 60204-1:2016. Seguridad eléctrica en maquinaria industrial. iec.ch</div>
+    <div>• LOES Ecuador. (2022). Art. 107 (vinculación) · Art. 356 (accesibilidad). ces.gob.ec</div>
+    <div>• PUGS GAD Cuenca / ONU Habitat. (2019). cuenca.gob.ec</div>
+    <div>• Tec. Azuay ISTA. (2024). Oferta académica y capacidad. tecazuay.edu.ec</div>
+    <div>• ARCSA Ecuador. (2024). Normativa de vuelo de drones para formación. arc.gob.ec</div>
+  </div>
+  <div style="margin-top:10px;display:flex;justify-content:space-between">
+    <span>Programa Arquitectónico — Facultad 3: Ingeniería, Tecnología e Informática · Campus Técnico Interprovincial Zona 6</span>
+    <span>Michelle Marín · Esteban Ortíz · Nayeli León · <strong>Proyectos VI · 2025</strong></span>
+  </div>
+</div>
+
+</body>
+</html>
